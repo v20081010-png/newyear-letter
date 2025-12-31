@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>新年，想對你說的話</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: "Noto Serif TC","PingFang TC",serif;
+  background: linear-gradient(180deg,#0f2027,#203a43,#2c5364);
+  color: #333;
+}
+
+.container {
+  max-width: 760px;
+  margin: auto;
+  padding: 32px 18px 80px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.15);
+}
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.9;
+  margin-bottom: 14px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 80px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 15px;
+  margin-bottom: 20px;
+  resize: vertical;
+}
+
+button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px 36px;
+  border-radius: 30px;
+  border: none;
+  background: #2c5364;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #203a43;
+}
+
+.center {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.answer-box {
+  background: #f4f4f4;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.time {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="main">
+
+  <!-- 文章 -->
+  <div class="card">
+    <h1>🌙 新年，想對你說的話</h1>
+
+    <p>新年快樂，小孩。</p>
+    <p>你最近過得怎麼樣？有沒有乖乖吃飯，好好照顧自己。</p>
+    <p>我不知道你會不會看到這個網站，但我真的準備了很久。</p>
+    <p>只是希望，你能感覺得到——這些話，是寫給你的。</p>
+  </div>
+
+  <!-- 問題 -->
+  <div class="card">
+    <h2>🤍 想請你回答的幾個問題</h2>
+
+    <p>1. 你最近過得怎麼樣？</p>
+    <textarea id="q1"></textarea>
+
+    <p>2. 你有沒有交到新的男朋友呢？</p>
+    <textarea id="q2"></textarea>
+
+    <p>3. 如果沒有的話，你還會不會想，再一次和我一起走下去？</p>
+    <textarea id="q3"></textarea>
+
+    <p>4. 這一次，如果我們真的再一起，你希望用什麼樣的身分？</p>
+    <textarea id="q4"></textarea>
+
+    <button onclick="submitForm()">送出回答</button>
+  </div>
+
+</div>
+
+<!-- 感謝頁 -->
+<div class="container hidden" id="thankYou">
+  <div class="card center">
+    <h1>謝謝你</h1>
+    <p>不論答案是什麼，<br>謝謝你願意留下來。</p>
+  </div>
+</div>
+
+<!-- 管理頁 -->
+<div class="container hidden" id="admin">
+  <div class="card">
+    <h1>管理者回答列表</h1>
+    <div id="adminList"></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "2025";
+
+function submitForm() {
+  const data = {
+    time: new Date().toLocaleString(),
+    a1: q1.value,
+    a2: q2.value,
+    a3: q3.value,
+    a4: q4.value
+  };
+
+  const all = JSON.parse(localStorage.getItem("answers") || "[]");
+  all.push(data);
+  localStorage.setItem("answers", JSON.stringify(all));
+
+  main.classList.add("hidden");
+  thankYou.classList.remove("hidden");
+}
+
+function loadAdmin() {
+  const pw = prompt("請輸入管理密碼");
+  if (pw !== ADMIN_PASSWORD) return alert("密碼錯誤");
+
+  main.classList.add("hidden");
+  admin.classList.remove("hidden");
+
+  const all = JSON.parse(localStorage.getItem("answers") || "[]");
+  adminList.innerHTML = "";
+
+  all.forEach((a,i)=>{
+    adminList.innerHTML += `
+      <div class="answer-box">
+        <div class="time">第 ${i+1} 份｜${a.time}</div>
+        <div>1️⃣ ${a.a1}</div>
+        <div>2️⃣ ${a.a2}</div>
+        <div>3️⃣ ${a.a3}</div>
+        <div>4️⃣ ${a.a4}</div>
+      </div>
+    `;
+  });
+}
+
+if (location.hash === "#admin") {
+  loadAdmin();
+}
+</script>
+
+</body>
+</html>
